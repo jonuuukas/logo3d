@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CircularBuffer : MonoBehaviour {
+public class CircularBuffer {
 
 	public CircularBuffer(int count){
 		_max = count;
@@ -30,12 +30,19 @@ public class CircularBuffer : MonoBehaviour {
 		_peeker = _top - 1;
 
 	}
-	public string Peek(){
+	public string Peek(string dir){
+		if (dir == "up") {
+			_peeker--;
+		} else if (dir == "down") {
+			_peeker++;
+		}
 		if (_peeker <= -1) {
 			_peeker = _length - 1;
 		}
-		var temp = _peeker;
-		_peeker--;
-		return _arr [temp];
+		if (_peeker >= _max) {
+			_peeker = 0;
+		}
+		return _arr [_peeker];
 	}
+
 }
