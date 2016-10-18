@@ -24,12 +24,12 @@ public class InputParser : CommandList {
 			{
 			case "pirmyn":
 			case "pn":
-				MoveForward (temp);
+				MoveForward (Mathf.FloorToInt(temp));
 				i++;
 				break;
 			case "atgal":
 			case "al":
-				MoveBackwards (temp);
+				MoveBackwards (Mathf.FloorToInt(temp));
 				i++;
 				break;
 			case "kairen":
@@ -51,6 +51,10 @@ public class InputParser : CommandList {
 					CmdExecutor (cmdList [i + 2]);
 				i += 2;
 				break;
+            case "spalva":
+                    ChangeColor(cmdList[i+1]);
+                    i++;
+                    break;
 			default:
 				Debug.Log ("komanda nerasta");
 				break;
