@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ConfigurationManager : MonoBehaviour {
     public static int size;
@@ -10,6 +9,7 @@ public class ConfigurationManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        size = 300;
         defaultColor = Color.black;
         currColor = defaultColor;
 	}

@@ -23,77 +23,77 @@ public class CommandList : MonoBehaviour
         if (val != 0)
         {
             obj = GameObject.FindGameObjectWithTag("Player");
-            var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.z);
+            var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
             //var dest = obj.transform.forward * (val);
             //if N// do other sides depending on the enum
             switch (movementDir)
             {
                 case Direction.N:
-                    GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z);
-                    dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.z + val);
+                    //GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z);
+                    dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z + i);
+                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + i);
                     }
                     GridManager.currentPos.z += val;
                     
                     break;
                 case Direction.NE:
-                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.z + val);
+                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.z + i);
+                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z + i);
                     }
                     GridManager.currentPos.x += val;
                     GridManager.currentPos.z += val;
                     break;
                 case Direction.E:
-                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.z);
+                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.z);
+                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z);
                     }
                     GridManager.currentPos.x += val;
                     break;
                 case Direction.SE:
-                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.z - val);
+                    dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y , GridManager.currentPos.z - val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.z - i);
+                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z - i);
                     }
                     GridManager.currentPos.x += val;
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.S:
-                    dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.z - val);
+                    dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z - i);
+                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - i);
                     }
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.SW:
-                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.z - val);
+                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z - val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.z - i);
+                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z - i);
                     }
                     GridManager.currentPos.x -= val;
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.W:
-                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.z);
+                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.z);
+                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z);
                     }
                     GridManager.currentPos.x -= val;
                     break;
                 case Direction.NW:
-                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.z + val);
+                    dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     for (int i = 0; i < val; i++)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.z + i);
+                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z + i);
                     }
                     GridManager.currentPos.x -= val;
                     GridManager.currentPos.z += val;
@@ -147,19 +147,40 @@ public class CommandList : MonoBehaviour
         }
     }
 
+    public void MoveUp()
+    {
+        obj = GameObject.FindGameObjectWithTag("Player");
+        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y + 1, GridManager.currentPos.z);
+        GridManager.currentPos.y += 1;
+        obj.transform.position = dest;
+    }
+
+    public void MoveDown()
+    {
+        obj = GameObject.FindGameObjectWithTag("Player");
+        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y - 1, GridManager.currentPos.z);
+        GridManager.currentPos.y -= 1;
+        obj.transform.position = dest;
+    }
+
     //===Returns to the starting position and rotation received in Start()===//
     public void ToHome()
     {
 
         obj = GameObject.FindGameObjectWithTag("Player");
-        obj.transform.position = GridManager.getPosition(GridManager.startingPos.x,GridManager.startingPos.z);
+        obj.transform.position = GridManager.getPosition(GridManager.startingPos.x, GridManager.startingPos.y, GridManager.startingPos.z);
         GridManager.currentPos = GridManager.startingPos;
-        Debug.Log(obj.transform.rotation);
         obj.transform.rotation = new Quaternion(0, 0, 0, 0);
-        Debug.Log(obj.transform.rotation);
         movementDir = Direction.N;
     }
 
+    public void FillInside(string var)
+    {
+        var temp = ConfigurationManager.currColor;
+        ChangeColor(var);
+        GridManager.floodFill(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
+        ChangeColor(temp.ToString());
+    }
     //not working as I would like, will need rework//
     void DrawLine(Vector3 start, Vector3 end)
     {

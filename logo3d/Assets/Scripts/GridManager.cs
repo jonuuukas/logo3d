@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public struct PositionIndexes
 {
@@ -15,21 +16,13 @@ public struct PositionIndexes
 }
 public struct GridCell
 {
-    public Vector3 position;
     public bool isEmpty;
-    GameObject CellFill;
 
-    public GridCell(float x, float y, float z)
+    public void SpawnCube(int x, int y, int z)
     {
-        position = new Vector3(x, y, z);
-        isEmpty = true;
-        CellFill = null;
-    }
-    public void SpawnCube()
-    {
-        CellFill = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GameObject CellFill = GameObject.CreatePrimitive(PrimitiveType.Cube);
         isEmpty = false;
-        CellFill.transform.position = position;
+        CellFill.transform.position = new Vector3(x,y,z);
         CellFill.gameObject.GetComponent<Renderer>().material.color = ConfigurationManager.currColor;
     }
 }
@@ -40,33 +33,57 @@ public class GridManager : MonoBehaviour {
     public static PositionIndexes startingPos;
     public static PositionIndexes currentPos;
     
-    static GridCell[,] grid;
+    static GridCell[,,] grid;
 	// Use this for initialization
 	void Start () {
-        startingPos = new PositionIndexes(300, 0, 300);
-        currentPos = new PositionIndexes(300, 0, 300);
-        grid = new GridCell[600,600];
+        startingPos = new PositionIndexes(150, 0, 150);
+        currentPos = new PositionIndexes(150, 0, 150);
+        grid = new GridCell[300,300,300];
         createGrid();
 	}
 	
     void createGrid()
     {
-        for (int i = 0; i<600; i++)
+        for (int i = 0; i<300; i++)
         {
-            for (int j = 0; j<600; j++)
+            for (int j = 0; j<300; j++)
             {
-                grid[i, j] = new GridCell(i, 0, j);
+                for (int k = 0; k < 300; k++)
+                {
+                    grid[i, j, k] = new GridCell();
+                    grid[i, j, k].isEmpty = true;
+                }
             }
         }
     }
-    public static Vector3 getPosition(int i, int j)
+    public static Vector3 getPosition(int i, int j, int k)
     {
-        return grid[i, j].position;
+        return new Vector3(i,j, k);
     }
     
-    public static void paintCell(int i, int j)
+    public static void paintCell(int i, int j, int k)
     {
-        if (grid[i,j].isEmpty)
-            grid[i, j].SpawnCube();
+        filler();
+        if (grid[i, j, k].isEmpty)
+            grid[i, j, k].SpawnCube(i,j,k);
+    }
+    public static IEnumerator filler()
+    {
+            yield return new WaitForEndOfFrame();
+    }
+    public static void floodFill(int i, int j, int k)
+    {
+        if (!grid[i, j, k].isEmpty)
+            return;
+        filler();
+        grid[i, j, k].SpawnCube(i,j,k);
+        if (grid[i - 1, j, k].isEmpty)
+            floodFill(i - 1, j, k);
+        if (grid[i + 1, j, k].isEmpty)
+            floodFill(i + 1, j, k);
+        if (grid[i, j, k + 1].isEmpty)
+            floodFill(i, j, k + 1);
+        if (grid[i, j, k - 1].isEmpty)
+            floodFill(i, j, k - 1);
     }
 }

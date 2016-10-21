@@ -42,6 +42,16 @@ public class InputParser : CommandList {
 				RotateRight (temp);
 				i++;
 				break;
+            case "aukstyn":
+            case "an":
+            case "up":
+                MoveUp();
+                break;
+            case "zemyn":
+            case "zn":
+            case "down":
+                MoveDown();
+                break;
 			case "namo":
 				ToHome ();
 				break;
@@ -53,6 +63,10 @@ public class InputParser : CommandList {
 				break;
             case "spalva":
                     ChangeColor(cmdList[i+1]);
+                    i++;
+                    break;
+            case "spalvink":
+                    FillInside(cmdList [i + 1]);
                     i++;
                     break;
 			default:
