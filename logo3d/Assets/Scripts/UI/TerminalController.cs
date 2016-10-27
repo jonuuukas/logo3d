@@ -6,6 +6,8 @@ public class TerminalController : MonoBehaviour {
     
 	
 	public InputField terminal;
+    public InputField multiTerminal;
+
 	public int commCount = 10; //sets the memorized command for up arrow count
 
     public Text history1;
@@ -34,7 +36,7 @@ public class TerminalController : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.DownArrow)) {
 			terminal.text = lastComm.Peek ("down");
 		}
-		if (Input.GetKeyDown (KeyCode.Return))
+		if (Input.GetKeyDown (KeyCode.Return) && terminal.isFocused)
 			sendInput ();
 	}
 
@@ -43,13 +45,25 @@ public class TerminalController : MonoBehaviour {
 		terminal.text = "";
 		parser.CmdExecutor (temp);
 		terminal.ActivateInputField ();
-        //HistoryPanelManager.getHistory();
-        setHistory();
 		if (temp != "") {
 			lastComm.Push (temp);
 		}
-	}
-
+        setHistory();
+    }
+    public void sendMultiInput()
+    {
+        var temp = multiTerminal.text.Split('\n');
+        multiTerminal.text = "";
+        for (int i = 0; i < temp.Length; i++)
+        {
+            if (temp[i] != "")
+            {
+                parser.CmdExecutor(temp[i]);
+                lastComm.Push(temp[i]);
+            }
+        }
+        setHistory();
+    }
     public void setHistory()
     {
         var temp = lastComm.GetLastFive();
