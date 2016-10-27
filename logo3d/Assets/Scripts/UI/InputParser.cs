@@ -69,7 +69,19 @@ public class InputParser : CommandList {
                     FillInside(cmdList [i + 1]);
                     i++;
                     break;
-			default:
+            case "trintukas":
+            case "eraser":
+                    ConfigurationManager.paintMode = ConfigurationManager.PaintMode.Erase;
+                    break;
+            case "piestukas":
+            case "pen":
+                    ConfigurationManager.paintMode = ConfigurationManager.PaintMode.Paint;
+                    break;
+            case "hover":
+            case "sklandyk":
+                    ConfigurationManager.paintMode = ConfigurationManager.PaintMode.Hover;
+                    break;
+            default:
 				Debug.Log ("komanda nerasta");
 				break;
 			}

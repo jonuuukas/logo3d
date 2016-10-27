@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class CommandList : MonoBehaviour
 {
@@ -31,69 +32,116 @@ public class CommandList : MonoBehaviour
                 case Direction.N:
                     //GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z);
                     dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + val);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if(ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                        }
                     }
                     GridManager.currentPos.z += val;
-                    
                     break;
                 case Direction.NE:
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z + val);
-                    for (int i = 0; i < val; i++)
-                    {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover) { 
+                            for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                        }
                     }
                     GridManager.currentPos.x += val;
                     GridManager.currentPos.z += val;
                     break;
                 case Direction.E:
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z);
+
+                        }
                     }
                     GridManager.currentPos.x += val;
                     break;
                 case Direction.SE:
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y , GridManager.currentPos.z - val);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x + i, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                        }
                     }
                     GridManager.currentPos.x += val;
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.S:
                     dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - val);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                        }
                     }
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.SW:
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z - val);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z - i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z - i);                    
+                        }
                     }
                     GridManager.currentPos.x -= val;
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.W:
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z);
+                        }
                     }
                     GridManager.currentPos.x -= val;
                     break;
                 case Direction.NW:
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z + val);
-                    for (int i = 0; i < val; i++)
+                    if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
-                        GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                        for (int i = 0; i < val; i++)
+                        {
+                            if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                                GridManager.paintCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                            else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                                GridManager.deleteCell(GridManager.currentPos.x - i, GridManager.currentPos.y, GridManager.currentPos.z + i);
+                        }
                     }
                     GridManager.currentPos.x -= val;
                     GridManager.currentPos.z += val;
@@ -103,7 +151,6 @@ public class CommandList : MonoBehaviour
                     Debug.Log("something is not right with me");
                     break;
             }
-            DrawLine(obj.transform.position, dest);
             obj.transform.position = dest;
 
         }
@@ -173,7 +220,10 @@ public class CommandList : MonoBehaviour
         obj.transform.rotation = new Quaternion(0, 0, 0, 0);
         movementDir = Direction.N;
     }
-
+    public void DeleteCube()
+    {
+        GridManager.deleteCell(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
+    }
     public void FillInside(string var)
     {
         var temp = ConfigurationManager.currColor;

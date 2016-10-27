@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public struct PositionIndexes
 {
@@ -14,76 +15,129 @@ public struct PositionIndexes
         z = Z;
     }
 }
-public struct GridCell
-{
-    public bool isEmpty;
 
-    public void SpawnCube(int x, int y, int z)
-    {
-        GameObject CellFill = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        isEmpty = false;
-        CellFill.transform.position = new Vector3(x,y,z);
-        CellFill.gameObject.GetComponent<Renderer>().material.color = ConfigurationManager.currColor;
-    }
-}
-
-  
 public class GridManager : MonoBehaviour {
 
     public static PositionIndexes startingPos;
     public static PositionIndexes currentPos;
-    
-    static GridCell[,,] grid;
-	// Use this for initialization
-	void Start () {
-        startingPos = new PositionIndexes(150, 0, 150);
-        currentPos = new PositionIndexes(150, 0, 150);
-        grid = new GridCell[300,300,300];
-        createGrid();
-	}
-	
-    void createGrid()
-    {
-        for (int i = 0; i<300; i++)
-        {
-            for (int j = 0; j<300; j++)
-            {
-                for (int k = 0; k < 300; k++)
-                {
-                    grid[i, j, k] = new GridCell();
-                    grid[i, j, k].isEmpty = true;
-                }
-            }
-        }
+
+    static BitArray new_grid;
+
+    // Use this for initialization
+    void Start() {
+        //div by 2 so it would be in the middle
+        startingPos = new PositionIndexes(ConfigurationManager.size/2, 0, ConfigurationManager.size/2);
+        currentPos = new PositionIndexes(ConfigurationManager.size/2, 0, ConfigurationManager.size/2);
+
+        //size*size*size is pow 3 and also method sets all the bits to be empty = 0
+        new_grid = new BitArray((int)Mathf.Pow(ConfigurationManager.size,3));
+        new_grid.SetAll(false);
+
     }
+
     public static Vector3 getPosition(int i, int j, int k)
     {
-        return new Vector3(i,j, k);
+        return new Vector3(i, j, k);
     }
-    
+    //if true the grid part is not empty
+    public static bool getBit(int i, int j, int k)
+    {
+        //f.e: i * 300 * 300 + j * 300 + k
+        return new_grid[i * (int)Mathf.Pow(ConfigurationManager.size,2) + j * ConfigurationManager.size + k];
+    }
+
+    public static void inverseBit(int i, int j, int k)
+    {
+        new_grid[i * (int)Mathf.Pow(ConfigurationManager.size, 2) + j * ConfigurationManager.size + k] = !new_grid[i * (int)Mathf.Pow(ConfigurationManager.size, 2) + j * ConfigurationManager.size + k];
+    }
+    //used for command list to check if empty or not
     public static void paintCell(int i, int j, int k)
     {
-        filler();
-        if (grid[i, j, k].isEmpty)
-            grid[i, j, k].SpawnCube(i,j,k);
+        if (!getBit(i, j, k))
+            SpawnCube(i, j, k);
     }
-    public static IEnumerator filler()
+    public static void deleteCell(int i, int j, int k)
     {
-            yield return new WaitForEndOfFrame();
+        if (getBit(i, j, k))
+            DeleteCube(i, j, k);
+    }
+    public static void SpawnCube(int x, int y, int z)
+    {
+        GameObject CellFill = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        inverseBit(x, y, z);
+        CellFill.transform.position = new Vector3(x, y, z);
+        CellFill.gameObject.GetComponent<Renderer>().material.color = ConfigurationManager.currColor;
+    }
+    public static void DeleteCube(int x, int y, int z)
+    {
+        Collider[] coll;
+        if ((coll = Physics.OverlapSphere(getPosition(x,y,z), 0.1f)).Length >= 1)
+        {
+            foreach (var collider in coll)
+            {
+                //cause collider might pick up ground and player
+                if (collider.name == "Cube" || collider.tag == "Spawn")
+                    Destroy(collider.gameObject);
+            }
+            inverseBit(x, y, z);
+        }
     }
     public static void floodFill(int i, int j, int k)
     {
-        if (!grid[i, j, k].isEmpty)
+        if (getBit(i, j, k))
             return;
-        filler();
-        grid[i, j, k].SpawnCube(i,j,k);
-        if (grid[i - 1, j, k].isEmpty)
+        SpawnCube(i, j, k);
+        if (!getBit(i - 1, j, k))
             floodFill(i - 1, j, k);
-        if (grid[i + 1, j, k].isEmpty)
+        if (!getBit(i + 1, j, k))
             floodFill(i + 1, j, k);
-        if (grid[i, j, k + 1].isEmpty)
+        if (!getBit(i, j, k + 1))
             floodFill(i, j, k + 1);
-        if (grid[i, j, k - 1].isEmpty)
+        if (!getBit(i, j, k - 1))
             floodFill(i, j, k - 1);
     }
+
+    public static void QfloodFill(int i, int j, int k)
+    {
+        Queue <Vector3> Q = new Queue <Vector3>();
+        if (getBit(i, j, k))
+            return;
+        Q.Enqueue(getPosition(i, j, k));
+        
+        while (Q.Count > 0)
+        {
+            Vector3 curr = Q.Dequeue();
+
+            int w = (int) curr.x;
+            int e = (int) curr.x;
+            int y = (int) curr.z;
+
+                while ((w > 0) && getBit(w-1,j, y)==false)
+                {
+                    w--;
+                }
+
+                while ((e < ConfigurationManager.size) && getBit(e+1,j, y)==false)
+                {
+                    e++;
+                }
+
+                for (int x = w; x <= e; x++)
+                {
+
+                    SpawnCube(x,j,y);
+
+                    if ((y > 0) && !getBit(x,j,y-1))
+                    {
+                        Q.Enqueue(getPosition(x,j,y - 1));
+                    }
+
+                    if ((y < ConfigurationManager.size) && !getBit(x, j, y + 1))
+                    {
+                        Q.Enqueue(getPosition(x, j, y + 1));
+                    }
+                }
+
+            }
+        }
 }
