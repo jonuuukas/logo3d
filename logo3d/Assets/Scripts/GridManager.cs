@@ -96,7 +96,20 @@ public class GridManager : MonoBehaviour {
         if (!getBit(i, j, k - 1))
             floodFill(i, j, k - 1);
     }
-
+    public static void floodDelete(int i, int j, int k)
+    {
+        if (!getBit(i, j, k))
+            return;
+        DeleteCube(i, j, k);
+        if (getBit(i - 1, j, k))
+            floodDelete(i - 1, j, k);
+        if (getBit(i + 1, j, k))
+            floodDelete(i + 1, j, k);
+        if (getBit(i, j, k + 1))
+            floodDelete(i, j, k + 1);
+        if (getBit(i, j, k - 1))
+            floodDelete(i, j, k - 1);
+    }
     public static void QfloodFill(int i, int j, int k)
     {
         Queue <Vector3> Q = new Queue <Vector3>();

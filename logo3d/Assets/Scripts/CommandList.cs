@@ -231,6 +231,10 @@ public class CommandList : MonoBehaviour
         GridManager.floodFill(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
         ChangeColor(temp.ToString());
     }
+    public void DeleteObject()
+    {
+        GridManager.floodDelete(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
+    }
     //not working as I would like, will need rework//
     void DrawLine(Vector3 start, Vector3 end)
     {
