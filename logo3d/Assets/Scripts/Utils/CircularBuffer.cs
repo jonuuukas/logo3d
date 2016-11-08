@@ -43,7 +43,6 @@ public class CircularBuffer {
 		if (_peeker >= _max) {
 			_peeker = 0;
 		}
-        Debug.Log(_peeker);
 		return _arr [_peeker];
 	}
     public string[] GetLastFive()

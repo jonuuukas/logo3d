@@ -2,10 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct CustomCommand
+{
+    public string name;
+    public string action;
+    public bool hasParam;
+    public string paramName;
+
+    public CustomCommand(string Name, string Action, bool Param, string ParamName)
+    {
+        name = Name;
+        action = Action;
+        hasParam = Param;
+        if (hasParam)
+            paramName = ParamName;
+        else
+            paramName = "null";
+    }
+}
+
 public class InputParser : CommandList {
 
-	//Gets the line from the Terminal in GameView, passes it to parse and switch statement does
-	//Dirty work
+    //Gets the line from the Terminal in GameView, passes it to parse and switch statement does
+    //Dirty work
+
+    List<CustomCommand> extraCmds = new List<CustomCommand>();
 	public void CmdExecutor(string line){
 		
 		string[] cmdList;
@@ -88,7 +109,36 @@ public class InputParser : CommandList {
             case "trink":
                     DeleteObject();
                     break;
+            case "tai":
+                    if (CheckEndingOfFunction(line) && !CheckForParameter(cmdList[i+2]))
+                    {
+                        int j = 2;
+                        string actionTemp = "";
+                        while (cmdList[i+j] != "taškas" || cmdList[i + j] != "taskas" || cmdList[i + j] != "dot")
+                        {
+                            if (cmdList[i + j] == "taskas" || cmdList[i + j] == "dot" || cmdList[i + j] == "taškas")
+                                break;
+                            if (cmdList[i + j] == "kartok" || cmdList[i + j] == "kartot" || cmdList[i + j] == "repeat")
+                                cmdList[i + j + 2] = "[" + cmdList[i + j + 2] + "]";
+                            actionTemp +=  cmdList[i + j] + " ";
+                            Debug.Log(cmdList[i + j]);
+                            j++;
+                        }
+                        
+                        AddNewCommand(cmdList[i + 1], actionTemp);
+                        Debug.Log(cmdList[i + 1] + " is Name");
+                        Debug.Log(actionTemp + " is the action");
+                        i += j;
+                    }
+                    break;
             default:
+                for (int j = 0; j<extraCmds.Count; j++)
+                    {
+                        if (extraCmds[j].name == cmd && !extraCmds[j].hasParam)
+                        {
+                            CmdExecutor(extraCmds[j].action);
+                        }
+                    }
 				Debug.Log ("komanda nerasta");
 				break;
 			}
@@ -141,4 +191,28 @@ public class InputParser : CommandList {
 		//Finishing up
 		cmdList = cmds.ToArray (); 
 	}
+
+    void AddNewCommand(string name, string action)
+    {
+        CustomCommand temp = new CustomCommand(name, action, false, "");
+        extraCmds.Add(temp);
+    }
+    void AddNewCommand(string name, string action, string paramName)
+    {
+        extraCmds.Add(new CustomCommand(name, action, true, paramName));
+    }
+    bool CheckForParameter(string var)
+    {
+        if (var[0] == ':')
+            return true;
+        else
+            return false;
+    }
+    bool CheckEndingOfFunction(string var)
+    {
+        if (var.Contains("taškas") || var.Contains("taskas") || var.Contains("dot"))
+            return true;
+        else
+            return false;
+    }
 }
