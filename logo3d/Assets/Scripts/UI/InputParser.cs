@@ -123,11 +123,27 @@ public class InputParser : CommandList {
                             actionTemp +=  cmdList[i + j] + " ";
                             Debug.Log(cmdList[i + j]);
                             j++;
-                        }
-                        
+                        }   
                         AddNewCommand(cmdList[i + 1], actionTemp);
                         Debug.Log(cmdList[i + 1] + " is Name");
                         Debug.Log(actionTemp + " is the action");
+                        i += j;
+                    }
+                    else if (CheckEndingOfFunction(line) && CheckForParameter(cmdList[i + 2]))
+                    {
+                        int j = 3;
+                        string actionTemp = "";
+                        while (cmdList[i + j] != "taškas" || cmdList[i + j] != "taskas" || cmdList[i + j] != "dot")
+                        {
+                            if (cmdList[i + j] == "taskas" || cmdList[i + j] == "dot" || cmdList[i + j] == "taškas")
+                                break;
+                            if (cmdList[i + j] == "kartok" || cmdList[i + j] == "kartot" || cmdList[i + j] == "repeat")
+                                cmdList[i + j + 2] = "[" + cmdList[i + j + 2] + "]";
+                            actionTemp += cmdList[i + j] + " ";
+                            Debug.Log(cmdList[i + j]);
+                            j++;
+                        }
+                        AddNewCommand(cmdList[i + 1], actionTemp, cmdList[i + 2]);
                         i += j;
                     }
                     break;
@@ -137,6 +153,13 @@ public class InputParser : CommandList {
                         if (extraCmds[j].name == cmd && !extraCmds[j].hasParam)
                         {
                             CmdExecutor(extraCmds[j].action);
+                            break;
+                        }
+                        else if (extraCmds[j].name == cmd && extraCmds[j].hasParam)
+                        {
+                            CmdExecutor(extraCmds[j].action.Replace(extraCmds[j].paramName, cmdList[i + 1]));
+                            i++;
+                            break;
                         }
                     }
 				Debug.Log ("komanda nerasta");
@@ -203,6 +226,7 @@ public class InputParser : CommandList {
     }
     bool CheckForParameter(string var)
     {
+        Debug.Log(var);
         if (var[0] == ':')
             return true;
         else
