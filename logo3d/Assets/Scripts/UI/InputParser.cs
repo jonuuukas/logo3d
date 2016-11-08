@@ -34,23 +34,25 @@ public class InputParser : CommandList {
 				break;
 			case "kairen":
 			case "kn":
-				RotateLeft (temp);
+				RotateLeft (Mathf.FloorToInt(temp));
 				i++;
 				break;
 			case "desinen":
 			case "dn":
-				RotateRight (temp);
+				RotateRight (Mathf.FloorToInt(temp));
 				i++;
 				break;
             case "aukstyn":
             case "an":
             case "up":
-                MoveUp();
+                MoveUp(Mathf.FloorToInt(temp));
+                i++;
                 break;
             case "zemyn":
             case "zn":
             case "down":
-                MoveDown();
+                MoveDown(Mathf.FloorToInt(temp));
+                i++;
                 break;
 			case "namo":
 				ToHome ();

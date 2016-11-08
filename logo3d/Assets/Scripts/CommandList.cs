@@ -30,7 +30,8 @@ public class CommandList : MonoBehaviour
             switch (movementDir)
             {
                 case Direction.N:
-                    //GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.z);
+                    if (GridManager.currentPos.z + val >= ConfigurationManager.size)
+                        break; //insert more error handling plz
                     dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -45,6 +46,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.z += val;
                     break;
                 case Direction.NE:
+                    if (GridManager.currentPos.x + val >= ConfigurationManager.size || GridManager.currentPos.z + val >= ConfigurationManager.size)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover) { 
                             for (int i = 0; i < val; i++)
@@ -59,6 +62,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.z += val;
                     break;
                 case Direction.E:
+                    if (GridManager.currentPos.x + val >= ConfigurationManager.size)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y, GridManager.currentPos.z);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -74,6 +79,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.x += val;
                     break;
                 case Direction.SE:
+                    if (GridManager.currentPos.x + val >= ConfigurationManager.size || GridManager.currentPos.z - val < 0)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x + val, GridManager.currentPos.y , GridManager.currentPos.z - val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -89,6 +96,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.S:
+                    if (GridManager.currentPos.z - val < 0)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z - val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -103,6 +112,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.SW:
+                    if (GridManager.currentPos.x - val < 0 || GridManager.currentPos.z - val < 0)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z - val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -118,6 +129,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.z -= val;
                     break;
                 case Direction.W:
+                    if (GridManager.currentPos.x - val < 0)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -132,6 +145,8 @@ public class CommandList : MonoBehaviour
                     GridManager.currentPos.x -= val;
                     break;
                 case Direction.NW:
+                    if (GridManager.currentPos.x - val < 0 || GridManager.currentPos.z + val >= ConfigurationManager.size)
+                        break;
                     dest = GridManager.getPosition(GridManager.currentPos.x - val, GridManager.currentPos.y, GridManager.currentPos.z + val);
                     if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
                     {
@@ -167,7 +182,7 @@ public class CommandList : MonoBehaviour
         }
     }
 
-    public void RotateLeft(float val)
+    public void RotateLeft(int val)
     {
         if (val != 0)
         {
@@ -181,7 +196,7 @@ public class CommandList : MonoBehaviour
         }
     }
 
-    public void RotateRight(float val)
+    public void RotateRight(int val)
     {
         if (val != 0)
         {
@@ -194,19 +209,39 @@ public class CommandList : MonoBehaviour
         }
     }
 
-    public void MoveUp()
+    public void MoveUp(int val)
     {
         obj = GameObject.FindGameObjectWithTag("Player");
-        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y + 1, GridManager.currentPos.z);
-        GridManager.currentPos.y += 1;
+        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y + val, GridManager.currentPos.z);
+        if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
+        {
+            for (int i = 0; i < val; i++)
+            {
+                if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                    GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y + i, GridManager.currentPos.z);
+                else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                    GridManager.deleteCell(GridManager.currentPos.x, GridManager.currentPos.y + i, GridManager.currentPos.z);
+            }
+        }
+        GridManager.currentPos.y += val;
         obj.transform.position = dest;
     }
 
-    public void MoveDown()
+    public void MoveDown(int val)
     {
         obj = GameObject.FindGameObjectWithTag("Player");
-        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y - 1, GridManager.currentPos.z);
-        GridManager.currentPos.y -= 1;
+        var dest = GridManager.getPosition(GridManager.currentPos.x, GridManager.currentPos.y - val, GridManager.currentPos.z);
+        if (ConfigurationManager.paintMode != ConfigurationManager.PaintMode.Hover)
+        {
+            for (int i = 0; i < val; i++)
+            {
+                if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Paint)
+                    GridManager.paintCell(GridManager.currentPos.x, GridManager.currentPos.y - i, GridManager.currentPos.z);
+                else if (ConfigurationManager.paintMode == ConfigurationManager.PaintMode.Erase)
+                    GridManager.deleteCell(GridManager.currentPos.x, GridManager.currentPos.y - i, GridManager.currentPos.z);
+            }
+        }
+        GridManager.currentPos.y -= val;
         obj.transform.position = dest;
     }
 
@@ -235,21 +270,7 @@ public class CommandList : MonoBehaviour
     {
         GridManager.floodDelete(GridManager.currentPos.x, GridManager.currentPos.y, GridManager.currentPos.z);
     }
-    //not working as I would like, will need rework//
-    void DrawLine(Vector3 start, Vector3 end)
-    {
-        Debug.Log(start + "is start and the end: " + end);
-        GameObject newLine = new GameObject();
-        newLine.transform.position = new Vector3(0, 0.1f, 0);
-        newLine.AddComponent<LineRenderer>();
-        LineRenderer lr = newLine.GetComponent<LineRenderer>();
-        lr.useWorldSpace = false;
-        lr.material = Resources.Load("lineMat") as Material;
-        lr.material.SetColor("_Color", Color.blue);
-        lr.SetWidth(0.05f, 0.05f);
-        lr.SetPosition(0, start);
-        lr.SetPosition(1, end);
-    }
+
     public void ChangeColor(string var)
     {
         switch (var)

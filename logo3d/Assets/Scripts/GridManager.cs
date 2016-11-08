@@ -43,6 +43,9 @@ public class GridManager : MonoBehaviour {
     public static bool getBit(int i, int j, int k)
     {
         //f.e: i * 300 * 300 + j * 300 + k
+        if (i < 0 || i >= ConfigurationManager.size || j < 0 || j >= ConfigurationManager.size || k < 0 || k >= ConfigurationManager.size)
+            return true;
+
         return new_grid[i * (int)Mathf.Pow(ConfigurationManager.size,2) + j * ConfigurationManager.size + k];
     }
 
