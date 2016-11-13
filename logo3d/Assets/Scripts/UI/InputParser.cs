@@ -31,14 +31,47 @@ public class InputParser : CommandList {
 		
 		string[] cmdList;
 		Parser (line, out cmdList);
+        string[] argList;
+        string[] listedCmdList;
 
 		for (int i = 0; i < cmdList.Length ; i+=1) {
 			var cmd = cmdList [i];
+            Debug.Log(cmd + cmdList[i+1]);
 			var temp = 0.0f;
 			//Using this to try and get the string as float needed for most commands
 			try {
-				float.TryParse (cmdList [i + 1], out temp);	
+                if (!cmdList[i + 1].Contains(","))
+                {
+                    float.TryParse(cmdList[i + 1], out temp);
+                }
+                else
+                {
+                    argList = cmdList[i + 1].Split(',');
+                    listedCmdList = new string[argList.Length];
+                    for(int j = 0; j < argList.Length; j++)
+                    {
+                        for(int k = 0; k < cmdList.Length; k++)
+                        {
+                            if (k != i + 1)
+                                listedCmdList[j] += cmdList[k] + " ";
+                            else {
+
+                                listedCmdList[j] += argList[j] + " ";
+                            }
+                        }
+                    }
+                    for (int j = 0; j < listedCmdList.Length; j++)
+                    {
+                        CmdExecutor(listedCmdList[j].Trim());
+                    }
+                    break;
+                }
+
 			} catch (System.Exception ex) {
+                if (cmdList[i + 1].Contains(","))
+                {
+                    argList = cmdList[i + 1].Split(',');
+                }
 				Debug.Log ("no parameter given " + ex);
 			}
 			switch (cmd)
